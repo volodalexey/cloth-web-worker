@@ -27,15 +27,19 @@ You can compare these examples in SINGLE thread and in Web Worker.
 ## Performance
 
 Initial data: 100x100 points, calculation of each constrain 2 times
+
 On my laptop it shows:
  - 16.5 fps in SINGLE thread
  - 28 fps in Web Worker, however visually it looks more deterministic than in SINGLE thread
+
 If you increase the number of elements, it shows that you can not benefit too much from Web Worker.
 
 ## Workflow with Web Worker
 
 Main thread sends command to start calculation, Web Worker begins to calculate each constrain per 1000/120 ms.
 
-Main thread on each animation frame sends command to retrieve constrains position (so on current animation frame it draws previous positions), Web Worker return all constrains in Float64Array.
+Main thread on each animation frame sends command to retrieve constrains position (so on current animation frame it draws previous positions).
+
+Web Worker returns all constrains in Float64Array.
 
 On mouse event main thread sends mouse data to Web Worker, so it can take into account new forces.

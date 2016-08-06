@@ -1,4 +1,4 @@
-# Tear-able cloth in Web Worker
+# Tear-able Cloth in Web Worker
 
 [DEMO](http://volodalexey.github.io/cloth-web-worker)
 

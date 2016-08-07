@@ -1,4 +1,4 @@
-﻿Canvas.prototype.updateCanvas = function(closure, mouse) {
+﻿Canvas.prototype.updateCanvas = function(closure, pointer) {
   var
     iterator,
     len = constrains_data.length,
@@ -7,8 +7,8 @@
     canvas_context = app.canvas_context;
   app.requests_count++;
   app.clearCanvas(canvas_element, canvas_context);
-  mouse.drawMouse(canvas_context);
-  mouse.capture = false;
+  pointer.drawPointer(canvas_context);
+  pointer.capture = false;
   for (iterator = 0; iterator < len; iterator += 5) {
     if (constrains_data[iterator] === 2) {
       break; // end of drawing
@@ -49,12 +49,12 @@ worker.onmessage = function(e) {
 window.onload = function() {
   var
     canvas = new Canvas(),
-    mouse = new Mouse(),
+    pointer = new Pointer(),
     canvas_width = canvas.canvas_width,
     canvas_height = canvas.canvas_height;
 
   canvas.initializeCanvas('#c', canvas_width, canvas_height);
-  canvas.addCanvasListeners(canvas.canvas_element, mouse);
+  canvas.addCanvasListeners(canvas.canvas_element, pointer);
 
   canvas.fps_last = Date.now();
   canvas.rps_last = canvas.fps_last;
@@ -71,9 +71,9 @@ window.onload = function() {
     };
 
   worker.postMessage(['new Cloth', canvas_width, canvas_height]);
-  mouse.syncMouse();
+  pointer.syncPointer();
 
   setInterval(countRPS, 1000);
   worker.postMessage(['startClothUpdate']);
-  canvas.startCanvasUpdate(mouse);
+  canvas.startCanvasUpdate(pointer);
 };

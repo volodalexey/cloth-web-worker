@@ -22,7 +22,7 @@ However it is still requires refactoring to do all things in pure-functions.
 
 When I faced with the limitation of one thread in Browser, I implemented calculation of all points/constrains in separate thread.
 
-You can compare these examples in SINGLE thread and in Web Worker.
+You can compare these examples in [SINGLE thread](http://volodalexey.github.io/cloth-web-worker/index.single.html) and in [Web Worker](http://volodalexey.github.io/cloth-web-worker/index.worker.html).
 
 ## Performance
 

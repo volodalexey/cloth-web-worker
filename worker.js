@@ -49,7 +49,7 @@ onmessage = function(e) {
       canvas_width = args[0]; canvas_height = args[1];
       cloth = new Cloth(canvas_width, canvas_height);
       break;
-    case 'sync Mouse':
+    case 'sync Pointer':
       mouse_down = args[0]; mouse_button = args[1]; mouse_from_x = args[2]; mouse_from_y = args[3];
       mouse_capture = args[4]; mouse_to_x = args[5]; mouse_to_y = args[6]; mouse_influence = args[7];
       mouse_cut = args[8]; mouse_force_factor = args[9];

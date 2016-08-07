@@ -18,10 +18,13 @@ Canvas.prototype.initializeCanvas = function(canvas_selector, canvas_width, canv
   this.canvas_context = canvas_context;
 };
 
-Canvas.prototype.addCanvasListeners = function(canvas_element, mouse) {
-  canvas_element.addEventListener('mousedown', mouse.binded_onMouseDown, false);
-  canvas_element.addEventListener('mousemove', mouse.binded_onMouseMove, false);
-  canvas_element.addEventListener('mouseup', mouse.binded_onMouseUp, false);
+Canvas.prototype.addCanvasListeners = function(canvas_element, pointer) {
+  canvas_element.addEventListener('mousedown', pointer.binded_onMouseDown, false);
+  canvas_element.addEventListener('touchstart', pointer.binded_onTouchStart, false);
+  canvas_element.addEventListener('mousemove', pointer.binded_onMouseMove, false);
+  canvas_element.addEventListener('touchmove', pointer.binded_onTouchMove, false);
+  canvas_element.addEventListener('mouseup', pointer.binded_onMouseUp, false);
+  canvas_element.addEventListener('touchend', pointer.binded_onTouchEnd, false);
 };
 
 Canvas.prototype.initializeRPS = function(rps_selector) {
@@ -37,11 +40,11 @@ Canvas.prototype.clearCanvas = function(canvas_element, canvas_context) {
   canvas_context.clearRect(0, 0, canvas_element.width, canvas_element.height);
 };
 
-Canvas.prototype.startCanvasUpdate = function(mouse, cloth) {
+Canvas.prototype.startCanvasUpdate = function(pointer, cloth) {
   var
     self = this,
     closure = function() {
-      self.updateCanvas(closure, mouse, cloth)
+      self.updateCanvas(closure, pointer, cloth)
     };
   closure();
 };

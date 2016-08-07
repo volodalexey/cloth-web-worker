@@ -1,18 +1,18 @@
-﻿Canvas.prototype.updateCanvas = function(closure, mouse, cloth) {
+﻿Canvas.prototype.updateCanvas = function(closure, pointer, cloth) {
   var
     app = this,
     canvas_element = app.canvas_element,
     canvas_context = app.canvas_context;
   app.requests_count++;
   app.clearCanvas(canvas_element, canvas_context);
-  mouse.drawMouse(canvas_context);
+  pointer.drawPointer(canvas_context);
   cloth.updateCloth(
-    mouse.down, mouse.button, mouse.from_x, mouse.from_y,
-    mouse.capture, mouse.to_x, mouse.to_y,
-    mouse.mouse_influence, mouse.mouse_cut, mouse.mouse_force_factor,
+    pointer.down, pointer.button, pointer.from_x, pointer.from_y,
+    pointer.capture, pointer.to_x, pointer.to_y,
+    pointer.mouse_influence, pointer.mouse_cut, pointer.mouse_force_factor,
     app.canvas_width, app.canvas_height
   );
-  mouse.capture = false;
+  pointer.capture = false;
   cloth.drawCloth(canvas_context);
   var
     now = Date.now(),
@@ -25,12 +25,12 @@
 window.onload = function() {
   var
     canvas = new Canvas(),
-    mouse = new Mouse(),
+    pointer = new Pointer(),
     canvas_width = canvas.canvas_width,
     canvas_height = canvas.canvas_height;
 
   canvas.initializeCanvas('#c', canvas_width, canvas_height);
-  canvas.addCanvasListeners(canvas.canvas_element, mouse);
+  canvas.addCanvasListeners(canvas.canvas_element, pointer);
 
   canvas.fps_last = Date.now();
   canvas.rps_last = canvas.fps_last;
@@ -49,5 +49,5 @@ window.onload = function() {
   var cloth = new Cloth(canvas_width, canvas_height);
 
   setInterval(countRPS, 1000);
-  canvas.startCanvasUpdate(mouse, cloth);
+  canvas.startCanvasUpdate(pointer, cloth);
 };

@@ -1,115 +1,77 @@
-var Point = function(x, y, rigidity) {
+var Point = function(x, y, invmass) {
+  this._x = x;
+  this._y = y;
   this.x = x;
   this.y = y;
   this.prev_x = x;
   this.prev_y = y;
-  this.pin_x = null;
-  this.pin_y = null;
-  this.rigidity = rigidity || 0.5;
-  this.constraints = [];
+  this.invmass = invmass || 1;
+  this.references = 0; // each spring has reference to point
 };
 
-Point.prototype.update = function(
-  mouse_down, mouse_button, mouse_from_x, mouse_from_y,
-  mouse_capture, mouse_to_x, mouse_to_y,
-  mouse_influence, mouse_cut, mouse_force_factor, gravity, gravity_force_factor) {
+Point.prototype.update = function(delta,
+                                  pointer_down, mouse_button, pointer_from_x, pointer_from_y,
+                                  mouse_capture, pointer_to_x, pointer_to_y,
+                                  mouse_influence, mouse_cut, mouse_force_factor, gravity, gravity_force_factor) {
   var
     mouse_add_x = 0, mouse_add_y = 0;
-  if (mouse_down) {
+  if (pointer_down) {
     var diff_x, diff_y, dist;
 
     if (mouse_button === 0) {
-      diff_x = this.x - mouse_from_x;
-      diff_y = this.y - mouse_from_y;
+      diff_x = this.x - pointer_from_x;
+      diff_y = this.y - pointer_from_y;
       dist = Math.sqrt(diff_x * diff_x + diff_y * diff_y);
       if (mouse_capture && dist < mouse_influence || this.captured) {
-        mouse_add_x = (mouse_to_x - mouse_from_x) * mouse_force_factor;
-        mouse_add_y = (mouse_to_y - mouse_from_y) * mouse_force_factor;
-        this.prev_x = this.x - mouse_add_x;
-        this.prev_y = this.y - mouse_add_y;
+        mouse_add_x = (pointer_to_x - pointer_from_x) * mouse_force_factor;
+        mouse_add_y = (pointer_to_y - pointer_from_y) * mouse_force_factor;
         this.captured = true;
       } else {
         this.captured = false;
       }
     } else if (mouse_button == 1) {
-      diff_x = this.x - mouse_to_x;
-      diff_y = this.y - mouse_to_y;
+      diff_x = this.x - pointer_to_x;
+      diff_y = this.y - pointer_to_y;
       dist = Math.sqrt(diff_x * diff_x + diff_y * diff_y);
       if (dist < mouse_cut) {
-        this.constraints = []
+        this.references = 0;
       }
     }
   } else {
     this.captured = false;
   }
-
+  var b = {x: this.x, y: this.y};
   var
     inertia_add_x = this.x - this.prev_x,
     inertia_add_y = this.y - this.prev_y,
-    force_add_x = 0,
-    force_add_y = gravity,
-    new_x = this.x + inertia_add_x + mouse_add_x + (force_add_x * gravity_force_factor),
-    new_y = this.y + inertia_add_y + mouse_add_y + (force_add_y * gravity_force_factor);
+    force_add_x = 0 * gravity_force_factor + mouse_add_x,
+    force_add_y = gravity * gravity_force_factor + mouse_add_y,
+    // next_x = this.x + inertia_add_x + force_add_x * delta * delta * 0.001,
+    next_x = this.x + inertia_add_x + force_add_x * 20 * 20 * 0.001,
+    // next_y = this.y + inertia_add_y + force_add_y * delta * delta * 0.001;
+    next_y = this.y + inertia_add_y + force_add_y * 20 * 20 * 0.001;
 
   this.prev_x = this.x;
   this.prev_y = this.y;
 
-  this.x = new_x;
-  this.y = new_y;
-};
-
-Point.prototype.drawPoint = function(canvas_context) {
-  if (this.constraints.length <= 0) {
-    return
-  }
-  var self = this;
-  this.constraints.forEach(function(constrain) {
-    constrain.drawConstrain(self, canvas_context)
-  });
-};
-
-Point.prototype.resolveConstraints = function(bounds_x, bounds_y, tear_distance) {
-
-  if (this.pin_x != null && this.pin_y != null) {
-    this.x = this.pin_x;
-    this.y = this.pin_y;
-    return;
-  }
-
-  var self = this;
-  this.constraints.forEach(function(constrain) {
-    constrain.resolve(self, tear_distance)
-  });
-
-  if (this.x > bounds_x) {
-    this.x = 2 * bounds_x - this.x
-  } else if (1 > this.x) {
-    this.x = 2 - this.x
-  }
-  if (this.y < 1) {
-    this.y = 2 - this.y
-  } else if (this.y > bounds_y) {
-    this.y = 2 * bounds_y - this.y
+  if (this.invmass !== 0) {
+    this.x = next_x;
+    this.y = next_y;
   }
 };
 
-Point.prototype.addConstrain = function(point) {
-  this.constraints.push(
-    new Constraint(this, point)
-  );
-};
-
-Point.prototype.removeConstraint = function(constrain) {
-  var patched_constrains = [];
-  this.constraints.forEach(function(_constrain) {
-    if (_constrain !== constrain) {
-      patched_constrains.push(_constrain)
-    }
-  });
-  this.constraints = patched_constrains;
-};
-
-Point.prototype.pin = function(pinx, piny) {
-  this.pin_x = pinx;
-  this.pin_y = piny;
+Point.prototype.resolveConstraints = function(bounds_x, bounds_y) {
+  var x = this.x, y = this.y;
+  if (x < 1) {
+    x = 2 - x
+  } else if (x > bounds_x) {
+    x = 2 * bounds_x - x
+  }
+  this.x = x;
+  if (y < 1) {
+    y = 2 - y
+  } else if (y > bounds_y) {
+    y = 2 * bounds_y - y
+  }
+  this.y = y
 };

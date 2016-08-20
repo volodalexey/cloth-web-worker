@@ -1,9 +1,9 @@
 var Pointer = function() {
   this.down = false;
   this.capture = false;
-  this.mouse_influence = 25;
+  this.mouse_influence = 50;
   this.mouse_cut = 6;
-  this.mouse_force_factor = 0.1;
+  this.mouse_force_factor = 0.5;
   this.from_x = 0; this.from_y = 0;
   this.to_x = 0; this.to_x = 0;
   this.start_x = 0; this.start_y = 0;

@@ -1,14 +1,15 @@
 var Cloth = function(canvas_width, canvas_height) {
-  this.cloth_width = 100;
-  this.cloth_height = 100;
-  this.spacing = 4;
-  this.tear_distance = 20;
-  this.physics_accuracy = 2;
-  this.gravity = 1;
-  this.gravity_force_factor = 0.01;
+  this.cloth_width = 5;
+  this.cloth_height = 5;
+  this.spacing = 50;
+  this.tear_distance = 200;
+  this.physics_accuracy = 1;
+  this.gravity = 9.8;
+  this.gravity_force_factor = 2;
   this.points = [];
+  this.springs = [];
   var
-    points = this.points,
+    points = this.points, springs = this.springs,
     spacing = this.spacing,
     cloth_width = this.cloth_width, cloth_height = this.cloth_height,
     start_x = canvas_width / 2 - cloth_width * spacing / 2,
@@ -22,17 +23,16 @@ var Cloth = function(canvas_width, canvas_height) {
       var p = new Point(
         start_x + x * spacing,
         start_y + y * spacing,
-        x === y ? 0.1 : null
-        // (cloth_width - x + 1) / cloth_width
+        x === y ? 0.5 : 1
       );
 
       if (y === 0) {
-        p.pin(p.x, p.y)
-      } else {
-        p.addConstrain(points[x + (y - 1) * (cloth_width + 1)])
+        p.invmass = 0;
+      } else { // if it is not upper add to up
+        springs.push(new Spring(p, points[x + (y - 1) * (cloth_width + 1)]));
       }
-      if (x !== 0) {
-        p.addConstrain(points[points.length - 1])
+      if (x !== 0) { // if it is not the left add to left
+        springs.push(new Spring(p, points[points.length - 1]));
       }
 
       points.push(p);
@@ -41,36 +41,46 @@ var Cloth = function(canvas_width, canvas_height) {
 };
 
 Cloth.prototype.updateCloth = function(
+  delta,
   mouse_down, mouse_button, mouse_from_x, mouse_from_y,
   mouse_capture, mouse_to_x, mouse_to_y,
   mouse_influence, mouse_cut, mouse_force_factor, canvas_width, canvas_height) {
   var
     tear_distance = this.tear_distance,
-    points = this.points,
+    points = this.points, springs = this.springs, spacing = this.spacing,
     physics_accuracy = this.physics_accuracy,
     gravity = this.gravity,
     gravity_force_factor = this.gravity_force_factor,
     bounds_x = canvas_width - 1,
     bounds_y = canvas_height - 1;
 
-  while (physics_accuracy--) {
-    points.forEach(function(point) {
-      point.resolveConstraints(bounds_x, bounds_y, tear_distance)
-    });
-  }
-
   points.forEach(function(point) {
     point.update(
+      delta,
       mouse_down, mouse_button, mouse_from_x, mouse_from_y,
       mouse_capture, mouse_to_x, mouse_to_y,
       mouse_influence, mouse_cut, mouse_force_factor,
       gravity, gravity_force_factor
     )
   });
+
+  points.forEach(function(point) {
+    point.resolveConstraints(bounds_x, bounds_y)
+  });
+
+  while (physics_accuracy--) {
+    this.springs = springs.filter(function(spring) {
+      return resolveSpring(spring.point_a, spring.point_b, spacing, tear_distance)
+    });
+  }
+
+  this.points = points.filter(function(point) {
+    return point.references
+  })
 };
 
 Cloth.prototype.drawCloth = function(canvas_context) {
-  this.points.forEach(function(point) {
-    point.drawPoint(canvas_context)
+  this.springs.forEach(function(spring) {
+    drawSpring(spring.point_a, spring.point_b, canvas_context)
   });
 };

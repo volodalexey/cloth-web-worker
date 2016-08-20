@@ -65,7 +65,7 @@ window.onload = function() {
       var
         now = Date.now(),
         elapsed = now - canvas.rps_last;
-      canvas.rps_element.value = (canvas.requests_count*1000/elapsed).toFixed(1);
+      canvas.rps_element.value = 'rps: ' + (canvas.requests_count*1000/elapsed).toFixed(1);
       canvas.requests_count = 0;
       canvas.rps_last = now;
     };

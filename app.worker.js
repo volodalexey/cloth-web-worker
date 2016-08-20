@@ -1,19 +1,15 @@
 ﻿Canvas.prototype.updateCanvas = function(closure, pointer) {
-  var
-    iterator,
-    len = springs_data.length,
-    app = this,
-    canvas_element = app.canvas_element,
-    canvas_context = app.canvas_context;
-  app.requests_count++;
-  app.clearCanvas(canvas_element, canvas_context);
-  pointer.drawPointer(canvas_context);
-  pointer.capture = false;
   if (new_frame) {
-    for (iterator = 0; iterator < len; iterator += 6) {
-      if (springs_data[iterator] === 2) {
-        break; // end of drawing
-      }
+    var
+      iterator,
+      app = this,
+      canvas_element = app.canvas_element,
+      canvas_context = app.canvas_context;
+    app.requests_count++;
+    app.clearCanvas(canvas_element, canvas_context);
+    pointer.drawPointer(canvas_context);
+    pointer.capture = false;
+    for (iterator = 0; iterator < length; iterator += 6) {
       this.drawSpring(
         canvas_context,
         springs_data[iterator], springs_data[iterator + 1], springs_data[iterator + 2],
@@ -21,17 +17,18 @@
       );
     }
     new_frame = false;
+
+    var
+      now = Date.now(),
+      delta = (now - app.fps_last)/1000;
+    app.fps_last = now;
+    app.drawFPS(1/delta, canvas_context);
   }
-  var
-    now = Date.now(),
-    delta = (now - app.fps_last)/1000;
-  app.fps_last = now;
-  app.drawFPS(1/delta, canvas_context);
   worker.postMessage(['request sync Springs']);
   requestAnimationFrame(closure);
 };
 
-var worker = new Worker('worker.js'),
+var worker = new Worker('worker.js'), length,
   springs_data = [], new_frame = false;
 
 worker.onmessage = function(e) {
@@ -41,6 +38,7 @@ worker.onmessage = function(e) {
   switch (type) {
     case 'sync Springs':
       springs_data = data[1];
+      length = data[2];
       new_frame = true;
       break;
   }
@@ -53,7 +51,7 @@ window.onload = function() {
     canvas_width = canvas.canvas_width,
     canvas_height = canvas.canvas_height;
 
-  canvas.initializeCanvas('#c', canvas_width, canvas_height);
+  canvas.initializeCanvas('#c', canvas_width, canvas_height, '2d');
   canvas.addCanvasListeners(canvas.canvas_element, pointer);
 
   canvas.fps_last = Date.now();

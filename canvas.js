@@ -6,10 +6,10 @@ var Canvas = function(width, height) {
   this.fps_last = 0;
 };
 
-Canvas.prototype.initializeCanvas = function(canvas_selector, canvas_width, canvas_height) {
+Canvas.prototype.initializeCanvas = function(canvas_selector, canvas_width, canvas_height, context) {
   var
     canvas_element = document.querySelector(canvas_selector),
-    canvas_context = canvas_element.getContext('2d');
+    canvas_context = canvas_element.getContext(context);
 
   canvas_element.width = canvas_width;
   canvas_element.height = canvas_height;
@@ -49,9 +49,9 @@ Canvas.prototype.startCanvasUpdate = function(pointer, cloth) {
   closure();
 };
 
-Canvas.prototype.drawSpring = function(canvas_context, a_captured, a_x, a_y, b_captured, b_x, b_y) {
+Canvas.prototype.drawSpring = function(canvas_context, a_x, a_y, a_captured, b_x, b_y, b_captured) {
   canvas_context.beginPath();
-  canvas_context.lineWidth = 5;
+  // canvas_context.lineWidth = 1;
   var grad;
   if (a_captured && b_captured) {
     canvas_context.strokeStyle = 'rgb(0,0,255)';

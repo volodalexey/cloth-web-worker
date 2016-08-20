@@ -4,9 +4,9 @@
 
 ## History
 
-Originally this tear-able cloth was made by ... I don't know )).
-
 You can can see a lot of examples of this cloth in the internet.
+
+Under the hood is used [Verlet integration scheme](http://www.gamasutra.com/resource_guide/20030121/jacobson_pfv.htm) by Thomas Jakobsen.
 
 I faced with this cloth on the [Lonely-pixel](http://lonely-pixel.com) but it is not alive any more.
 

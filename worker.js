@@ -8,23 +8,25 @@ var
   mouse_capture, mouse_to_x, mouse_to_y,
   mouse_influence, mouse_cut, mouse_force_factor,
   result, delta = 16,
-  serializeSprings = function(springs) {
+  translateCoord = function(coord, half) {
+    return (coord - half) / half
+  },
+  serializeSprings = function(springs, webgl) {
     if (!result) {
       result = new Float32Array(springs.length * 2 * 6)
     }
     var
       iterator = 0;
       springs.forEach(function(spring) {
-        result[iterator] = spring.point_a.captured;
-        result[iterator + 1] = spring.point_a.x;
-        result[iterator + 2] = spring.point_a.y;
-        result[iterator + 3] = spring.point_b.captured;
-        result[iterator + 4] = spring.point_b.x;
-        result[iterator + 5] = spring.point_b.y;
+        result[iterator] = webgl ? translateCoord(spring.point_a.x, canvas_width/2) : spring.point_a.x;
+        result[iterator + 1] = webgl ? -1 * translateCoord(spring.point_a.y, canvas_height/2) : spring.point_a.y;
+        result[iterator + 2] = webgl ? 0 : spring.point_a.captured;
+        result[iterator + 3] = webgl ? translateCoord(spring.point_b.x, canvas_width/2) : spring.point_b.x;
+        result[iterator + 4] = webgl ? -1 * translateCoord(spring.point_b.y, canvas_height/2) : spring.point_b.y;
+        result[iterator + 5] = webgl ? 0 : spring.point_b.captured;
         iterator += 6;
       });
-    result[iterator] = 2; // end of drawing
-    return result;
+    return [result, iterator + 1];
   },
   updater = function() {
     cloth.updateCloth(
@@ -36,6 +38,7 @@ var
   };
 onmessage = function(e) {
   var
+    ret,
     data = e.data,
     type = data[0],
     args = data.slice(1);
@@ -54,7 +57,12 @@ onmessage = function(e) {
       setInterval(updater, 1000/60);
       break;
     case 'request sync Springs':
-      postMessage(['sync Springs'].concat(serializeSprings(cloth.springs)));
+      ret = serializeSprings(cloth.springs);
+      postMessage(['sync Springs', ret[0], ret[1]]);
+      break;
+    case 'request sync Springs webgl':
+      ret = serializeSprings(cloth.springs, true);
+      postMessage(['sync Springs', ret[0], ret[1]]);
       break;
   }
 };

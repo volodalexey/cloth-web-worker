@@ -31,7 +31,7 @@ window.onload = function() {
     canvas_width = canvas.canvas_width,
     canvas_height = canvas.canvas_height;
 
-  canvas.initializeCanvas('#c', canvas_width, canvas_height);
+  canvas.initializeCanvas('#c', canvas_width, canvas_height, '2d');
   canvas.addCanvasListeners(canvas.canvas_element, pointer);
 
   canvas.fps_last = Date.now();

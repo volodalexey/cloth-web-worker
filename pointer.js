@@ -3,7 +3,7 @@ var Pointer = function() {
   this.capture = false;
   this.mouse_influence = 50;
   this.mouse_cut = 6;
-  this.mouse_force_factor = 0.5;
+  this.mouse_force_factor = 0.01;
   this.from_x = 0; this.from_y = 0;
   this.to_x = 0; this.to_x = 0;
   this.start_x = 0; this.start_y = 0;

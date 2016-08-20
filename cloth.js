@@ -1,6 +1,6 @@
 var Cloth = function(canvas_width, canvas_height) {
-  this.cloth_width = 5;
-  this.cloth_height = 5;
+  this.cloth_width = 2;
+  this.cloth_height = 2;
   this.spacing = 50;
   this.tear_distance = 200;
   this.physics_accuracy = 1;
@@ -13,8 +13,7 @@ var Cloth = function(canvas_width, canvas_height) {
     spacing = this.spacing,
     cloth_width = this.cloth_width, cloth_height = this.cloth_height,
     start_x = canvas_width / 2 - cloth_width * spacing / 2,
-    // start_y = canvas_height / 2 - cloth_height * spacing / 2;
-    start_y = 10;
+    start_y = canvas_height / 2 - cloth_height * spacing / 2;
 
   for (var y = 0; y <= cloth_height; y++) {
 
@@ -56,7 +55,7 @@ Cloth.prototype.updateCloth = function(
 
   points.forEach(function(point) {
     point.update(
-      delta,
+      16, 0.001,
       mouse_down, mouse_button, mouse_from_x, mouse_from_y,
       mouse_capture, mouse_to_x, mouse_to_y,
       mouse_influence, mouse_cut, mouse_force_factor,

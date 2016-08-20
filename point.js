@@ -9,7 +9,7 @@ var Point = function(x, y, invmass) {
   this.references = 0; // each spring has reference to point
 };
 
-Point.prototype.update = function(delta,
+Point.prototype.update = function(delta, delta_factor,
                                   pointer_down, mouse_button, pointer_from_x, pointer_from_y,
                                   mouse_capture, pointer_to_x, pointer_to_y,
                                   mouse_influence, mouse_cut, mouse_force_factor, gravity, gravity_force_factor) {
@@ -40,16 +40,14 @@ Point.prototype.update = function(delta,
   } else {
     this.captured = false;
   }
-  var b = {x: this.x, y: this.y};
+  mouse_add_y = 30;
   var
     inertia_add_x = this.x - this.prev_x,
     inertia_add_y = this.y - this.prev_y,
     force_add_x = 0 * gravity_force_factor + mouse_add_x,
     force_add_y = gravity * gravity_force_factor + mouse_add_y,
-    // next_x = this.x + inertia_add_x + force_add_x * delta * delta * 0.001,
-    next_x = this.x + inertia_add_x + force_add_x * 20 * 20 * 0.001,
-    // next_y = this.y + inertia_add_y + force_add_y * delta * delta * 0.001;
-    next_y = this.y + inertia_add_y + force_add_y * 20 * 20 * 0.001;
+    next_x = this.x + inertia_add_x + force_add_x * delta * delta * delta_factor,
+    next_y = this.y + inertia_add_y + force_add_y * delta * delta * delta_factor;
 
   this.prev_x = this.x;
   this.prev_y = this.y;

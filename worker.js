@@ -1,4 +1,4 @@
-importScripts('constraint.js');
+importScripts('spring.js');
 importScripts('point.js');
 importScripts('cloth.js');
 

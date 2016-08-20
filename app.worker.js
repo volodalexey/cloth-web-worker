@@ -1,7 +1,7 @@
 ﻿Canvas.prototype.updateCanvas = function(closure, pointer) {
   var
     iterator,
-    len = constrains_data.length,
+    len = springs_data.length,
     app = this,
     canvas_element = app.canvas_element,
     canvas_context = app.canvas_context;
@@ -9,39 +9,43 @@
   app.clearCanvas(canvas_element, canvas_context);
   pointer.drawPointer(canvas_context);
   pointer.capture = false;
-  for (iterator = 0; iterator < len; iterator += 5) {
-    if (constrains_data[iterator] === 2) {
-      break; // end of drawing
+  if (new_frame) {
+    for (iterator = 0; iterator < len; iterator += 5) {
+      if (springs_data[iterator] === 2) {
+        break; // end of drawing
+      }
+      canvas_context.beginPath();
+      if (springs_data[iterator]) {
+        canvas_context.strokeStyle = 'rgb(0,0,255)';
+      } else {
+        canvas_context.strokeStyle = 'rgb(255,0,0)'
+      }
+      canvas_context.moveTo(springs_data[iterator + 1], springs_data[iterator + 2]);
+      canvas_context.lineTo(springs_data[iterator + 3], springs_data[iterator + 4]);
+      canvas_context.stroke();
     }
-    canvas_context.beginPath();
-    if (constrains_data[iterator]) {
-      canvas_context.strokeStyle = 'rgb(0,0,255)';
-    } else {
-      canvas_context.strokeStyle = 'rgb(255,0,0)'
-    }
-    canvas_context.moveTo(constrains_data[iterator + 1], constrains_data[iterator + 2]);
-    canvas_context.lineTo(constrains_data[iterator + 3], constrains_data[iterator + 4]);
-    canvas_context.stroke();
+    new_frame = false;
   }
   var
     now = Date.now(),
     delta = (now - app.fps_last)/1000;
   app.fps_last = now;
   app.drawFPS(1/delta, canvas_context);
-  worker.postMessage(['request sync Points']);
+  worker.postMessage(['request sync Springs']);
   requestAnimationFrame(closure);
 };
 
 var worker = new Worker('worker.js'),
-  constrains_data = [];
+  springs_data = [], new_frame = false;
 
 worker.onmessage = function(e) {
   var
     data = e.data,
     type = data[0];
   switch (type) {
-    case 'sync Points':
-      constrains_data = data[1];
+    case 'sync Springs':
+      springs_data = data[1];
+      new_frame = true;
       break;
   }
 };

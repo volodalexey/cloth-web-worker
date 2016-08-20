@@ -7,32 +7,28 @@ var
   cloth, mouse_down, mouse_button, mouse_from_x, mouse_from_y,
   mouse_capture, mouse_to_x, mouse_to_y,
   mouse_influence, mouse_cut, mouse_force_factor,
-  result,
-  serializePoints = function(points) {
+  result, delta = 16,
+  serializeSprings = function(springs) {
     if (!result) {
-      result = new Float64Array(points.length * 2 * 5)
+      result = new Float32Array(springs.length * 2 * 5)
     }
     var
       iterator = 0;
-      points.forEach(function(point) {
-        var len = point.constraints.length;
-        if (len) {
-          point.constraints.forEach(function(constrain) {
-            result[iterator] =
-              point.captured || constrain.point.captured ? 1 : 0; // if constrain is captured by mouse
-            result[iterator + 1] = point.x;
-            result[iterator + 2] = point.y;
-            result[iterator + 3] = constrain.point.x;
-            result[iterator + 4] = constrain.point.y;
-            iterator += 5;
-          });
-        }
+      springs.forEach(function(spring) {
+        result[iterator] =
+          spring.point_a.captured || spring.point_b.captured ? 1 : 0; // if constrain is captured by mouse
+        result[iterator + 1] = spring.point_a.x;
+        result[iterator + 2] = spring.point_a.y;
+        result[iterator + 3] = spring.point_b.x;
+        result[iterator + 4] = spring.point_b.y;
+        iterator += 5;
       });
     result[iterator] = 2; // end of drawing
     return result;
   },
   updater = function() {
     cloth.updateCloth(
+      delta,
       mouse_down, mouse_button, mouse_from_x, mouse_from_y,
       mouse_capture, mouse_to_x, mouse_to_y,
       mouse_influence, mouse_cut, mouse_force_factor, canvas_width, canvas_height
@@ -55,10 +51,10 @@ onmessage = function(e) {
       mouse_cut = args[8]; mouse_force_factor = args[9];
       break;
     case 'startClothUpdate':
-      setInterval(updater, 1000/120);
+      setInterval(updater, 1000/60);
       break;
-    case 'request sync Points':
-      postMessage(['sync Points'].concat(serializePoints(cloth.points)));
+    case 'request sync Springs':
+      postMessage(['sync Springs'].concat(serializeSprings(cloth.springs)));
       break;
   }
 };

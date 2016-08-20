@@ -1,8 +1,8 @@
 var Cloth = function(canvas_width, canvas_height) {
-  this.cloth_width = 2;
-  this.cloth_height = 2;
+  this.cloth_width = 10;
+  this.cloth_height = 10;
   this.spacing = 50;
-  this.tear_distance = 200;
+  this.tear_distance = 300;
   this.physics_accuracy = 1;
   this.gravity = 9.8;
   this.gravity_force_factor = 2;
@@ -13,7 +13,9 @@ var Cloth = function(canvas_width, canvas_height) {
     spacing = this.spacing,
     cloth_width = this.cloth_width, cloth_height = this.cloth_height,
     start_x = canvas_width / 2 - cloth_width * spacing / 2,
-    start_y = canvas_height / 2 - cloth_height * spacing / 2;
+    start_y = canvas_height / 2 - cloth_height * spacing;
+
+  start_y = start_y < 0 ? 0 : start_y;
 
   for (var y = 0; y <= cloth_height; y++) {
 
@@ -78,8 +80,11 @@ Cloth.prototype.updateCloth = function(
   })
 };
 
-Cloth.prototype.drawCloth = function(canvas_context) {
+Cloth.prototype.drawCloth = function(canvas, canvas_context) {
   this.springs.forEach(function(spring) {
-    drawSpring(spring.point_a, spring.point_b, canvas_context)
+    canvas.drawSpring(
+      canvas_context,
+      spring.point_a.captured, spring.point_a.x, spring.point_a.y,
+      spring.point_b.captured, spring.point_b.x, spring.point_b.y)
   });
 };

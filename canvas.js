@@ -48,3 +48,27 @@ Canvas.prototype.startCanvasUpdate = function(pointer, cloth) {
     };
   closure();
 };
+
+Canvas.prototype.drawSpring = function(canvas_context, a_captured, a_x, a_y, b_captured, b_x, b_y) {
+  canvas_context.beginPath();
+  canvas_context.lineWidth = 5;
+  var grad;
+  if (a_captured && b_captured) {
+    canvas_context.strokeStyle = 'rgb(0,0,255)';
+  } else if (a_captured) {
+    grad = canvas_context.createLinearGradient(a_x, a_y, b_x, b_y);
+    grad.addColorStop(0, 'rgb(0,0,255)');
+    grad.addColorStop(1, 'rgb(255,0,0)');
+    canvas_context.strokeStyle = grad;
+  } else if (b_captured) {
+    grad = canvas_context.createLinearGradient(b_x, b_y, a_x, a_y);
+    grad.addColorStop(0, 'rgb(0,0,255)');
+    grad.addColorStop(1, 'rgb(255,0,0)');
+    canvas_context.strokeStyle = grad;
+  } else {
+    canvas_context.strokeStyle = 'rgb(255,0,0)'
+  }
+  canvas_context.moveTo(a_x, a_y);
+  canvas_context.lineTo(b_x, b_y);
+  canvas_context.stroke();
+};

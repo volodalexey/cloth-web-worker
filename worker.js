@@ -10,18 +10,18 @@ var
   result, delta = 16,
   serializeSprings = function(springs) {
     if (!result) {
-      result = new Float32Array(springs.length * 2 * 5)
+      result = new Float32Array(springs.length * 2 * 6)
     }
     var
       iterator = 0;
       springs.forEach(function(spring) {
-        result[iterator] =
-          spring.point_a.captured || spring.point_b.captured ? 1 : 0; // if constrain is captured by mouse
+        result[iterator] = spring.point_a.captured;
         result[iterator + 1] = spring.point_a.x;
         result[iterator + 2] = spring.point_a.y;
-        result[iterator + 3] = spring.point_b.x;
-        result[iterator + 4] = spring.point_b.y;
-        iterator += 5;
+        result[iterator + 3] = spring.point_b.captured;
+        result[iterator + 4] = spring.point_b.x;
+        result[iterator + 5] = spring.point_b.y;
+        iterator += 6;
       });
     result[iterator] = 2; // end of drawing
     return result;

@@ -16,7 +16,7 @@
     app.canvas_width, app.canvas_height
   );
   pointer.capture = false;
-  cloth.drawCloth(canvas_context);
+  cloth.drawCloth(this, canvas_context);
   now = Date.now();
   var delta_per_second = (now - app.fps_last)/1000;
   app.fps_last = now;

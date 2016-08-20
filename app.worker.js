@@ -10,19 +10,15 @@
   pointer.drawPointer(canvas_context);
   pointer.capture = false;
   if (new_frame) {
-    for (iterator = 0; iterator < len; iterator += 5) {
+    for (iterator = 0; iterator < len; iterator += 6) {
       if (springs_data[iterator] === 2) {
         break; // end of drawing
       }
-      canvas_context.beginPath();
-      if (springs_data[iterator]) {
-        canvas_context.strokeStyle = 'rgb(0,0,255)';
-      } else {
-        canvas_context.strokeStyle = 'rgb(255,0,0)'
-      }
-      canvas_context.moveTo(springs_data[iterator + 1], springs_data[iterator + 2]);
-      canvas_context.lineTo(springs_data[iterator + 3], springs_data[iterator + 4]);
-      canvas_context.stroke();
+      this.drawSpring(
+        canvas_context,
+        springs_data[iterator], springs_data[iterator + 1], springs_data[iterator + 2],
+        springs_data[iterator + 3], springs_data[iterator + 4], springs_data[iterator + 5]
+      );
     }
     new_frame = false;
   }
@@ -52,7 +48,7 @@ worker.onmessage = function(e) {
 
 window.onload = function() {
   var
-    canvas = new Canvas(),
+    canvas = new Canvas(window.innerWidth, window.innerHeight),
     pointer = new Pointer(),
     canvas_width = canvas.canvas_width,
     canvas_height = canvas.canvas_height;

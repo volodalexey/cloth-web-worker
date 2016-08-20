@@ -26,7 +26,7 @@
 
 window.onload = function() {
   var
-    canvas = new Canvas(),
+    canvas = new Canvas(window.innerWidth, window.innerHeight),
     pointer = new Pointer(),
     canvas_width = canvas.canvas_width,
     canvas_height = canvas.canvas_height;

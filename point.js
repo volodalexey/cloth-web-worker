@@ -40,7 +40,6 @@ Point.prototype.update = function(delta, delta_factor,
   } else {
     this.captured = false;
   }
-  mouse_add_y = 30;
   var
     inertia_add_x = this.x - this.prev_x,
     inertia_add_y = this.y - this.prev_y,

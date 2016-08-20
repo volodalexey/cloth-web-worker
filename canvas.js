@@ -1,6 +1,6 @@
-var Canvas = function() {
-  this.canvas_width = 600;
-  this.canvas_height = 600;
+var Canvas = function(width, height) {
+  this.canvas_width = width;
+  this.canvas_height = height;
   this.requests_count = 0;
   this.rps_last = 0;
   this.fps_last = 0;

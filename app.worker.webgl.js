@@ -1,18 +1,7 @@
-function initWebGL(gl) {
-  var vertexCode =
-    'attribute vec3 coordinates;' +
-    'void main(void) {' +
-    ' gl_Position = vec4(coordinates, 1.0);' +
-    '}';
-
+function initWebGL(gl, vertexCode, fragmentCode) {
   var vertexShader = gl.createShader(gl.VERTEX_SHADER);
   gl.shaderSource(vertexShader, vertexCode);
   gl.compileShader(vertexShader);
-
-  var fragmentCode =
-    'void main(void) {' +
-    'gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);' +
-    '}';
 
   var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
   gl.shaderSource(fragmentShader, fragmentCode);
@@ -80,35 +69,70 @@ worker.onmessage = function(e) {
   }
 };
 
-window.onload = function() {
-  var
-    canvas = new Canvas(window.innerWidth, window.innerHeight),
-    pointer = new Pointer(),
-    canvas_width = canvas.canvas_width,
-    canvas_height = canvas.canvas_height;
+function send(method, url, responseType) {
+  return new Promise((resolve, reject) => {
+    let xhr = new XMLHttpRequest();
+    xhr.__url = url;
+    xhr.open(method, url, true);
+    if (responseType) {
+      xhr.responseType = responseType;
+    }
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState === 4) {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          var result;
+          if (responseType) {
+            result = xhr.response
+          } else {
+            result = xhr.responseText
+          }
+          resolve(result);
+        } else {
+          reject(xhr);
+        }
+      }
+    };
+    xhr.send();
+  })
+}
 
-  canvas.initializeCanvas('#c', canvas_width, canvas_height, 'webgl');
-  shaderProgram = initWebGL(canvas.canvas_context);
-  canvas.addCanvasListeners(canvas.canvas_element, pointer);
-
-  canvas.fps_last = Date.now();
-  canvas.rps_last = canvas.fps_last;
-  canvas.requests_count = 0;
-
-  canvas.initializeRPS('#rps');
-  var countRPS = function() {
+Promise.all([
+  new Promise(resolve => {
+    window.addEventListener('load', resolve, false);
+  }),
+  send('GET', 'cloth.vert'),
+  send('GET', 'cloth.frag')
+])
+  .then(results => {
     var
-      now = Date.now(),
-      elapsed = now - canvas.rps_last;
-    canvas.rps_element.value = 'rps: ' + (canvas.requests_count*1000/elapsed).toFixed(1);
+      canvas = new Canvas(window.innerWidth, window.innerHeight),
+      pointer = new Pointer(),
+      canvas_width = canvas.canvas_width,
+      canvas_height = canvas.canvas_height;
+
+    canvas.initializeCanvas('#c', canvas_width, canvas_height, 'webgl');
+    shaderProgram = initWebGL(canvas.canvas_context, results[1], results[2]);
+    canvas.addCanvasListeners(canvas.canvas_element, pointer);
+
+    canvas.fps_last = Date.now();
+    canvas.rps_last = canvas.fps_last;
     canvas.requests_count = 0;
-    canvas.rps_last = now;
-  };
 
-  worker.postMessage(['new Cloth', canvas_width, canvas_height]);
-  pointer.syncPointer();
+    canvas.initializeRPS('#rps');
+    var countRPS = function() {
+      var
+        now = Date.now(),
+        elapsed = now - canvas.rps_last;
+      canvas.rps_element.value = 'rps: ' + (canvas.requests_count*1000/elapsed).toFixed(1);
+      canvas.requests_count = 0;
+      canvas.rps_last = now;
+    };
 
-  setInterval(countRPS, 1000);
-  worker.postMessage(['startClothUpdate']);
-  canvas.startCanvasUpdate(pointer);
-};
+    worker.postMessage(['new Cloth', canvas_width, canvas_height]);
+    pointer.syncPointer();
+
+    setInterval(countRPS, 1000);
+    worker.postMessage(['startClothUpdate']);
+    canvas.startCanvasUpdate(pointer);
+  })
+  .catch(e => console.error(e));

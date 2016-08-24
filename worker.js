@@ -20,10 +20,10 @@ var
       springs.forEach(function(spring) {
         result[iterator] = webgl ? translateCoord(spring.point_a.x, canvas_width/2) : spring.point_a.x;
         result[iterator + 1] = webgl ? -1 * translateCoord(spring.point_a.y, canvas_height/2) : spring.point_a.y;
-        result[iterator + 2] = webgl ? 0 : spring.point_a.captured;
+        result[iterator + 2] = spring.point_a.captured ? 1 : 0;
         result[iterator + 3] = webgl ? translateCoord(spring.point_b.x, canvas_width/2) : spring.point_b.x;
         result[iterator + 4] = webgl ? -1 * translateCoord(spring.point_b.y, canvas_height/2) : spring.point_b.y;
-        result[iterator + 5] = webgl ? 0 : spring.point_b.captured;
+        result[iterator + 5] = spring.point_b.captured ? 1 : 0;
         iterator += 6;
       });
     return [result, iterator + 1];

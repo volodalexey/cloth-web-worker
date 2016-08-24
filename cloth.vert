@@ -1,7 +1,9 @@
 precision mediump float;
 
-attribute vec2 coordinates;
+attribute vec3 coordinates;
+varying float fCaptured;
 
 void main(void) {
-  gl_Position = vec4(coordinates, 0.0, 1.0);
+  fCaptured = coordinates.z;
+  gl_Position = vec4(vec2(coordinates), 0.0, 1.0);
 }

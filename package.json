@@ -1,0 +1,23 @@
+{
+  "name": "cloth-web-worker",
+  "version": "1.0.0",
+  "description": "[DEMO](http://volodalexey.github.io/cloth-web-worker)",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "static": "static ./new -p 8769"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/volodalexey/cloth-web-worker.git"
+  },
+  "author": "Alexey Volodko",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/volodalexey/cloth-web-worker/issues"
+  },
+  "homepage": "https://github.com/volodalexey/cloth-web-worker#readme",
+  "dependencies": {
+    "node-static": "0.7.9"
+  }
+}

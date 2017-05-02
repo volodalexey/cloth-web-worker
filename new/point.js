@@ -17,14 +17,20 @@ class Point {
     if (this.pinX && this.pinY) return this;
     this.influenced = false;
     if (pointer.start) {
-      let dx = this.x - pointer.curX;
-      let dy = this.y - pointer.curY;
-      let dist = Math.sqrt(dx * dx + dy * dy);
+      let distances = pointer.pointers.map(p => {
+        let
+          dx = this.x - p.curX,
+          dy = this.y - p.curY;
+        return Math.sqrt(dx * dx + dy * dy);
+      });
+      let
+        dist = Math.min.apply(null, distances),
+        p = pointer.pointers[distances.indexOf(dist)];
 
-      if (pointer.button === 0 && dist < cloth.influence) {
+      if (p.button === 0 && dist < cloth.influence) {
         this.influenced = true;
-        this.px = this.x - pointer.diffPrevX;
-        this.py = this.y - pointer.diffPrevY;
+        this.px = this.x - p.diffPrevX;
+        this.py = this.y - p.diffPrevY;
       } else if (dist < cloth.cut) {
         this.constraints = [];
       }

@@ -29,8 +29,15 @@ class Constraint {
     return this;
   }
 
-  draw (ctx) {
+  draw ({ctx, point}) {
+    ctx.beginPath();
+    if (point.influenced) {
+      ctx.strokeStyle = '#ff0000';
+    } else {
+      ctx.strokeStyle = '#555';
+    }
     ctx.moveTo(this.p1.x, this.p1.y);
     ctx.lineTo(this.p2.x, this.p2.y);
+    ctx.stroke();
   }
 }

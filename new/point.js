@@ -8,19 +8,21 @@ class Point {
     this.vy = 0;
     this.pinX = null;
     this.pinY = null;
+    this.influenced = false;
 
     this.constraints = [];
   }
 
   update ({delta, canvas, pointer, cloth}) {
     if (this.pinX && this.pinY) return this;
-
+    this.influenced = false;
     if (pointer.start) {
       let dx = this.x - pointer.curX;
       let dy = this.y - pointer.curY;
       let dist = Math.sqrt(dx * dx + dy * dy);
 
       if (pointer.button === 0 && dist < cloth.influence) {
+        this.influenced = true;
         this.px = this.x - pointer.diffPrevX;
         this.py = this.y - pointer.diffPrevY;
       } else if (dist < cloth.cut) {
@@ -62,7 +64,7 @@ class Point {
 
   draw (ctx) {
     let i = this.constraints.length;
-    while (i--) this.constraints[i].draw(ctx)
+    while (i--) this.constraints[i].draw({ ctx, point: this })
   }
 
   resolve (canvas) {

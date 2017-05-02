@@ -6,7 +6,7 @@ window.addEventListener('load', () => {
       onMouseDown: (e) => pointer.onMouseDown(e), onMouseMove: (e) => pointer.onMouseMove(e), onMouseUp: (e) => pointer.onMouseUp(e),
       onTouchStart: (e) => pointer.onTouchStart(e), onTouchMove: (e) => pointer.onTouchMove(e), onTouchEnd: (e) => pointer.onTouchEnd(e)
     });
-  canvas.context.strokeStyle = '#555';
+
   let cloth = new Cloth({
     canvasWidth: canvas.width,
     clothX: 54, clothY: 28, spacing: 8,

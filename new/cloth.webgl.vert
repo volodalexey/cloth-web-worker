@@ -1,9 +1,9 @@
 precision mediump float;
 
 attribute vec3 coordinates;
-varying float fCaptured;
+varying float fInfluenced;
 
 void main(void) {
-  fCaptured = coordinates.z;
+  fInfluenced = coordinates.z;
   gl_Position = vec4(vec2(coordinates), 0.0, 1.0);
 }

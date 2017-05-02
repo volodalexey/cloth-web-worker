@@ -46,8 +46,6 @@ class Cloth {
   }
 
   update({delta, canvas, pointer}) {
-    let ctx = canvas.context;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
     let i = this.accuracy;
 
     while (i--) {
@@ -62,9 +60,11 @@ class Cloth {
   }
 
   draw2d({ canvas }) {
+    let ctx = canvas.context;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     for (let point of this.points) {
       for (let constraint of point.constraints) {
-        let ctx = canvas.context;
         ctx.beginPath();
         if (point.influenced) {
           ctx.strokeStyle = 'rgb(255, 0, 0)';

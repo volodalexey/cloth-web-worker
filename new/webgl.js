@@ -86,4 +86,8 @@ class WebGL {
       WebGL.getUniform(gl, program, 'u_AmbientLight'),
     ]
   }
+
+  static translateCoord(coordinate, half) {
+    return (coordinate - half) / half;
+  }
 }

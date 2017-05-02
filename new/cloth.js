@@ -61,7 +61,20 @@ class Cloth {
     });
   }
 
-  draw({ canvas }) {
-    this.points.forEach(point => point.draw(canvas));
+  draw2d({ canvas }) {
+    for (let point of this.points) {
+      for (let constraint of point.constraints) {
+        let ctx = canvas.context;
+        ctx.beginPath();
+        if (point.influenced) {
+          ctx.strokeStyle = 'rgb(255, 0, 0)';
+        } else {
+          ctx.strokeStyle = 'rgb(85, 85, 85)';
+        }
+        ctx.moveTo(constraint.p1.x, constraint.p1.y);
+        ctx.lineTo(constraint.p2.x, constraint.p2.y);
+        ctx.stroke();
+      }
+    }
   }
 }

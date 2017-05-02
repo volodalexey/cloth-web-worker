@@ -68,11 +68,6 @@ class Point {
     return this
   }
 
-  draw (canvas) {
-    let i = this.constraints.length;
-    while (i--) this.constraints[i].draw({ canvas, point: this })
-  }
-
   resolve (canvas) {
     if (this.pinX && this.pinY) {
       this.x = this.pinX;

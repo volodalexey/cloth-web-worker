@@ -18,7 +18,7 @@ window.addEventListener('load', () => {
 
     cloth.update({ delta: 0.016, canvas, pointer});
 
-    cloth.draw({ canvas });
+    cloth.draw2d({ canvas });
 
     requestAnimationFrame(update)
   })();

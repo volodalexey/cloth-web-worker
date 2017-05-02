@@ -28,17 +28,4 @@ class Constraint {
 
     return this;
   }
-
-  draw ({canvas, point}) {
-    let ctx = canvas.context;
-    ctx.beginPath();
-    if (point.influenced) {
-      ctx.strokeStyle = 'rgb(255, 0, 0)';
-    } else {
-      ctx.strokeStyle = 'rgb(85, 85, 85)';
-    }
-    ctx.moveTo(this.p1.x, this.p1.y);
-    ctx.lineTo(this.p2.x, this.p2.y);
-    ctx.stroke();
-  }
 }

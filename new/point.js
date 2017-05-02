@@ -68,9 +68,9 @@ class Point {
     return this
   }
 
-  draw (ctx) {
+  draw (canvas) {
     let i = this.constraints.length;
-    while (i--) this.constraints[i].draw({ ctx, point: this })
+    while (i--) this.constraints[i].draw({ canvas, point: this })
   }
 
   resolve (canvas) {

@@ -45,7 +45,7 @@ class Cloth {
     this._startY = startY;
   }
 
-  update ({delta, canvas, pointer}) {
+  update({delta, canvas, pointer}) {
     let ctx = canvas.context;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     let i = this.accuracy;
@@ -56,10 +56,12 @@ class Cloth {
       })
     }
 
-    ctx.beginPath();
     this.points.forEach((point) => {
-      point.update({ delta: delta * delta, canvas, cloth: this, pointer }).draw(ctx);
+      point.update({ delta: delta * delta, canvas, cloth: this, pointer });
     });
-    ctx.stroke();
+  }
+
+  draw({ canvas }) {
+    this.points.forEach(point => point.draw(canvas));
   }
 }

@@ -24,7 +24,6 @@ Promise.all([
       clothX: 54, clothY: 28, spacing: 8,
       scale: 1, startY: 20
     });
-    // VBO - Vertex Buffer Object
 
     let
       /**
@@ -79,19 +78,25 @@ Promise.all([
         gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, transformFeedback);
 
         backVertexBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, backVertexBuffer);
-        // gl.bufferData(gl.ARRAY_BUFFER, springsData.length * 10, gl.DYNAMIC_COPY);
-        // gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
-        // gl.enableVertexAttribArray(0);
+        gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, backVertexBuffer);
+        gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, springsData.length * 6, gl.DYNAMIC_COPY);
         gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, backVertexBuffer);
         gl.beginTransformFeedback(gl.LINES);
       }
       gl.drawArrays(gl.LINES, 0, (iterator + 1) / 3);
       if (isTime()) {
         gl.endTransformFeedback();
+
+        let outPosition = new Float32Array(springsData.length);
+        gl.getBufferSubData(gl.TRANSFORM_FEEDBACK_BUFFER, 0, outPosition);
+        console.log(outPosition);
       }
       frames++;
-      if (frames < 102) {
+      if (isTime()) {
+        if (frames === 101) {
+          requestAnimationFrame(update)
+        }
+      } else {
         requestAnimationFrame(update)
       }
     })();

@@ -2,8 +2,8 @@ Promise.all([
   new Promise(resolve => {
     window.addEventListener('load', resolve, false);
   }),
-  Load.getText('cloth.webgl.vert'),
-  Load.getText('cloth.webgl.frag')
+  Load.getText('cloth.webgl2.vert'),
+  Load.getText('cloth.webgl2.frag')
 ])
   .then(results => {
     let

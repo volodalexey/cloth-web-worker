@@ -14,9 +14,13 @@ Promise.all([
         onTouchStart: (e) => pointer.onTouchStart(e), onTouchMove: (e) => pointer.onTouchMove(e), onTouchEnd: (e) => pointer.onTouchEnd(e),
         onContextMenu: (e) => e.preventDefault()
       }),
-      shaderProgram = WebGL.initWebGL(canvas.context, results[1], results[2]);
+      gl = canvas.context,
+      shaderProgram = WebGL.initWebGL(gl, results[1], results[2]);
 
-    WebGL.linkAndUseProgramm(canvas.context, shaderProgram);
+    gl.transformFeedbackVaryings(shaderProgram, ['gl_Position'], gl.SEPARATE_ATTRIBS);
+    let transformFeedback = gl.createTransformFeedback();
+    gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, transformFeedback);
+    WebGL.linkAndUseProgramm(gl, shaderProgram);
     let cloth = new Cloth({
       canvasWidth: canvas.width,
       clothX: 54, clothY: 28, spacing: 8,
@@ -30,8 +34,9 @@ Promise.all([
        * each constraints has 3 coordinates
        */
       springsData = new Float32Array(cloth.points.length * 2 * 2 * 3),
-      vertexBuffer;
+      vertexBuffer, backVertexBuffer;
 
+      let frames = 0;
     (function update() {
 
       cloth.update({ delta: 0.016, canvas, pointer});
@@ -48,8 +53,8 @@ Promise.all([
           iterator += 6;
         }
       }
+      let isTime = () => frames > 100;
 
-      let gl = canvas.context;
       if (!vertexBuffer) {
         vertexBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
@@ -59,14 +64,29 @@ Promise.all([
         gl.vertexAttribPointer(coordinates, 3, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(coordinates);
       } else {
-        gl.bufferData(gl.ARRAY_BUFFER, springsData, gl.STATIC_DRAW);
+        if (isTime()) {
+
+        } else {
+          gl.bufferData(gl.ARRAY_BUFFER, springsData, gl.STATIC_DRAW);
+        }
       }
       gl.clearColor(1, 1, 1, 1);
       gl.enable(gl.DEPTH_TEST);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
       gl.viewport(0, 0, canvas.width, canvas.height);
-      gl.drawArrays(gl.LINES, 0, (iterator + 1) / 3);
 
+      if (isTime()) {
+        backVertexBuffer = gl.createBuffer();
+        // gl.bindBuffer(gl.ARRAY_BUFFER, backVertexBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, springsData.length * 3, gl.DYNAMIC_COPY);
+        gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, backVertexBuffer);
+        gl.beginTransformFeedback(gl.LINES);
+      }
+      gl.drawArrays(gl.LINES, 0, (iterator + 1) / 3);
+      if (isTime()) {
+        gl.endTransformFeedback();
+      }
+      frames++;
       requestAnimationFrame(update)
     })();
   });

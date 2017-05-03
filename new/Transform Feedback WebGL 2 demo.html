@@ -7,7 +7,7 @@
     <script src="canvas.js"></script>
 
     <script type="text/javascript">
-      let gl, bufA, bufB, aPosLoc;
+      let gl, bufA, bufB, rawBuf, aPosLoc;
       Promise.all([
         new Promise(resolve => {
           window.addEventListener('load', resolve, false);
@@ -35,7 +35,8 @@
 
           bufB = gl.createBuffer();
           gl.bindBuffer(gl.ARRAY_BUFFER, bufB);
-          gl.bufferData(gl.ARRAY_BUFFER, 4 * 4, gl.DYNAMIC_COPY);
+          rawBuf = new Float32Array(4 * 4);
+          gl.bufferData(gl.ARRAY_BUFFER, rawBuf, gl.DYNAMIC_COPY);
 
           let transformFeedback = gl.createTransformFeedback();
           gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, transformFeedback);

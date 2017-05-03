@@ -5,7 +5,6 @@ window.addEventListener('load', () => {
       selector: 'canvas', width: window.innerWidth, height: window.innerHeight, strContext: '2d',
       onMouseDown: (e) => pointer.onMouseDown(e), onMouseMove: (e) => pointer.onMouseMove(e), onMouseUp: (e) => pointer.onMouseUp(e),
       onTouchStart: (e) => pointer.onTouchStart(e), onTouchMove: (e) => pointer.onTouchMove(e), onTouchEnd: (e) => pointer.onTouchEnd(e),
-      onContextMenu: (e) => e.preventDefault()
     });
 
   let cloth = new Cloth({

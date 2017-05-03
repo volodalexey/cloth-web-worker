@@ -8,6 +8,7 @@ class Pointer extends Trigger {
     this.touchButton = 0;
     this.mouseSymbolKey = 'mouse';
     this.pointers = [];
+    this.prevent = true;
   }
 
   get start() {
@@ -43,6 +44,9 @@ class Pointer extends Trigger {
       Array.from(e.changedTouches)
       .map(touch => ({ id: touch.identifier, button: this.touchButton, clientX: touch.clientX, clientY: touch.clientY }))
     );
+    if (this.prevent) {
+      e.preventDefault();
+    }
   }
 
   onMouseDown(e) {
@@ -71,6 +75,9 @@ class Pointer extends Trigger {
       Array.from(e.changedTouches)
         .map(touch => ({ id: touch.identifier, clientX: touch.clientX, clientY: touch.clientY }))
     );
+    if (this.prevent) {
+      e.preventDefault();
+    }
   }
 
   onMouseMove(e) {
@@ -103,6 +110,9 @@ class Pointer extends Trigger {
       Array.from(e.changedTouches)
         .map(touch => ({ id: touch.identifier, button: this.touchButton, clientX: touch.clientX, clientY: touch.clientY }))
     );
+    if (this.prevent) {
+      e.preventDefault();
+    }
   }
 
   onMouseUp(e) {

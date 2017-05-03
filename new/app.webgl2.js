@@ -58,7 +58,7 @@ Promise.all([
       if (!vertexBuffer) {
         vertexBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, springsData, gl.STATIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, springsData, gl.DYNAMIC_COPY);
 
         let coordinates = gl.getAttribLocation(shaderProgram, 'coordinates');
         gl.vertexAttribPointer(coordinates, 3, gl.FLOAT, false, 0, 0);
@@ -67,7 +67,7 @@ Promise.all([
         if (isTime()) {
 
         } else {
-          gl.bufferData(gl.ARRAY_BUFFER, springsData, gl.STATIC_DRAW);
+          gl.bufferData(gl.ARRAY_BUFFER, springsData, gl.DYNAMIC_COPY);
         }
       }
       gl.clearColor(1, 1, 1, 1);
@@ -77,8 +77,10 @@ Promise.all([
 
       if (isTime()) {
         backVertexBuffer = gl.createBuffer();
-        // gl.bindBuffer(gl.ARRAY_BUFFER, backVertexBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, springsData.length * 3, gl.DYNAMIC_COPY);
+        gl.bindBuffer(gl.ARRAY_BUFFER, backVertexBuffer);
+        // gl.bufferData(gl.ARRAY_BUFFER, springsData.length * 3, gl.DYNAMIC_COPY);
+        // gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 0, 0);
+        // gl.enableVertexAttribArray(1);
         gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, backVertexBuffer);
         gl.beginTransformFeedback(gl.LINES);
       }
@@ -87,6 +89,8 @@ Promise.all([
         gl.endTransformFeedback();
       }
       frames++;
-      requestAnimationFrame(update)
+      if (frames < 110) {
+        requestAnimationFrame(update)
+      }
     })();
   });

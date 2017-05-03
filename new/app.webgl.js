@@ -12,7 +12,6 @@ Promise.all([
         selector: 'canvas', width: window.innerWidth, height: window.innerHeight, strContext: 'webgl',
         onMouseDown: (e) => pointer.onMouseDown(e), onMouseMove: (e) => pointer.onMouseMove(e), onMouseUp: (e) => pointer.onMouseUp(e),
         onTouchStart: (e) => pointer.onTouchStart(e), onTouchMove: (e) => pointer.onTouchMove(e), onTouchEnd: (e) => pointer.onTouchEnd(e),
-        onContextMenu: (e) => e.preventDefault()
       }),
       shaderProgram = WebGL.initWebGL(canvas.context, results[1], results[2]);
 

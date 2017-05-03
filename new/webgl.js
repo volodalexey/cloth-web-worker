@@ -21,6 +21,10 @@ class WebGL {
       shaderProgram = gl.createProgram();
     gl.attachShader(shaderProgram, vertexShader);
     gl.attachShader(shaderProgram, fragmentShader);
+    return shaderProgram
+  }
+
+  static linkAndUseProgramm(gl, shaderProgram) {
     gl.linkProgram(shaderProgram);
     gl.useProgram(shaderProgram);
     return shaderProgram

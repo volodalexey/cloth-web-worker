@@ -9,7 +9,7 @@ Promise.all([
     let
       pointer = new Pointer(),
       canvas = new Canvas({
-        selector: 'canvas', width: window.innerWidth, height: window.innerHeight, strContext: 'webgl',
+        selector: 'canvas', width: window.innerWidth, height: window.innerHeight, strContext: 'webgl2',
         onMouseDown: (e) => pointer.onMouseDown(e), onMouseMove: (e) => pointer.onMouseMove(e), onMouseUp: (e) => pointer.onMouseUp(e),
         onTouchStart: (e) => pointer.onTouchStart(e), onTouchMove: (e) => pointer.onTouchMove(e), onTouchEnd: (e) => pointer.onTouchEnd(e),
         onContextMenu: (e) => e.preventDefault()
@@ -53,13 +53,13 @@ Promise.all([
       if (!vertexBuffer) {
         vertexBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, springsData, gl.DYNAMIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, springsData, gl.STATIC_DRAW);
 
         let coordinates = gl.getAttribLocation(shaderProgram, 'coordinates');
         gl.vertexAttribPointer(coordinates, 3, gl.FLOAT, false, 0, 0);
         gl.enableVertexAttribArray(coordinates);
       } else {
-        gl.bufferData(gl.ARRAY_BUFFER, springsData, gl.DYNAMIC_DRAW);
+        gl.bufferData(gl.ARRAY_BUFFER, springsData, gl.STATIC_DRAW);
       }
       gl.clearColor(1, 1, 1, 1);
       gl.enable(gl.DEPTH_TEST);

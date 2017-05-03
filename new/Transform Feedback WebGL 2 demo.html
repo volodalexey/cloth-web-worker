@@ -1,0 +1,68 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    <title>Transform Feedback WebGL 2 demo</title>
+    <script src="load.js"></script>
+    <script src="webgl.js"></script>
+    <script src="canvas.js"></script>
+
+    <script type="text/javascript">
+      let gl, bufA, bufB, aPosLoc;
+      Promise.all([
+        new Promise(resolve => {
+          window.addEventListener('load', resolve, false);
+        }),
+        Load.getText('transform.vert'),
+        Load.getText('transform.frag')
+      ])
+        .then(results => {
+          let
+              canvas = new Canvas({
+                selector: 'canvas', width: window.innerWidth, height: window.innerHeight, strContext: 'webgl2',
+              }),
+              shaderProgram = WebGL.initWebGL(canvas.context, results[1], results[2]);
+
+          gl = canvas.context;
+          gl.transformFeedbackVaryings(shaderProgram, ["gl_Position"], gl.SEPARATE_ATTRIBS);
+          WebGL.linkAndUseProgramm(canvas.context, shaderProgram);
+
+          aPosLoc = gl.getAttribLocation(shaderProgram, "aPos");
+          gl.enableVertexAttribArray(aPosLoc);
+
+          bufA = gl.createBuffer();
+          gl.bindBuffer(gl.ARRAY_BUFFER, bufA);
+          gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([.8, 0, 0, 1]), gl.DYNAMIC_COPY);
+
+          bufB = gl.createBuffer();
+          gl.bindBuffer(gl.ARRAY_BUFFER, bufB);
+          gl.bufferData(gl.ARRAY_BUFFER, 4 * 4, gl.DYNAMIC_COPY);
+
+          let transformFeedback = gl.createTransformFeedback();
+          gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, transformFeedback);
+
+          draw();
+        });
+      function draw() {
+        gl.clear(gl.COLOR_BUFFER_BIT);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, bufA);
+        gl.vertexAttribPointer(aPosLoc, 4, gl.FLOAT, false, 0, 0);
+        gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, bufB);
+
+        gl.beginTransformFeedback(gl.POINTS);
+        gl.drawArrays(gl.POINTS, 0, 1);
+        gl.endTransformFeedback();
+
+        gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, null);
+
+        let t = bufA;
+        bufA = bufB;
+        bufB = t;
+      }
+    </script>
+</head>
+<body style="margin: 0; padding: 0;">
+<canvas id="canvas" width="300" height="100" style="display: block"></canvas>
+<button onclick="draw()" style="position: absolute; top: 1em; left: 1em;">Next</button>
+</body>
+</html>

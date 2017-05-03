@@ -12,20 +12,19 @@ Promise.all([
         selector: 'canvas', width: window.innerWidth, height: window.innerHeight, strContext: 'webgl2',
         onMouseDown: (e) => pointer.onMouseDown(e), onMouseMove: (e) => pointer.onMouseMove(e), onMouseUp: (e) => pointer.onMouseUp(e),
         onTouchStart: (e) => pointer.onTouchStart(e), onTouchMove: (e) => pointer.onTouchMove(e), onTouchEnd: (e) => pointer.onTouchEnd(e),
-        onContextMenu: (e) => e.preventDefault()
       }),
       gl = canvas.context,
       shaderProgram = WebGL.initWebGL(gl, results[1], results[2]);
 
     gl.transformFeedbackVaryings(shaderProgram, ['gl_Position'], gl.SEPARATE_ATTRIBS);
-    let transformFeedback = gl.createTransformFeedback();
-    gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, transformFeedback);
+
     WebGL.linkAndUseProgramm(gl, shaderProgram);
     let cloth = new Cloth({
       canvasWidth: canvas.width,
       clothX: 54, clothY: 28, spacing: 8,
       scale: 1, startY: 20
     });
+    // VBO - Vertex Buffer Object
 
     let
       /**
@@ -76,11 +75,14 @@ Promise.all([
       gl.viewport(0, 0, canvas.width, canvas.height);
 
       if (isTime()) {
+        let transformFeedback = gl.createTransformFeedback();
+        gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, transformFeedback);
+
         backVertexBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, backVertexBuffer);
-        // gl.bufferData(gl.ARRAY_BUFFER, springsData.length * 3, gl.DYNAMIC_COPY);
-        // gl.vertexAttribPointer(1, 3, gl.FLOAT, false, 0, 0);
-        // gl.enableVertexAttribArray(1);
+        // gl.bufferData(gl.ARRAY_BUFFER, springsData.length * 10, gl.DYNAMIC_COPY);
+        // gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
+        // gl.enableVertexAttribArray(0);
         gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, backVertexBuffer);
         gl.beginTransformFeedback(gl.LINES);
       }
@@ -89,7 +91,7 @@ Promise.all([
         gl.endTransformFeedback();
       }
       frames++;
-      if (frames < 110) {
+      if (frames < 102) {
         requestAnimationFrame(update)
       }
     })();

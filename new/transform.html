@@ -8,6 +8,9 @@
 
     <script type="text/javascript">
       let gl, bufA, bufB, aPosLoc;
+      let
+        initialPosition = new Float32Array([.8, 0, 0, 1]),
+        outPosition = new Float32Array(initialPosition.length);
       Promise.all([
         new Promise(resolve => {
           window.addEventListener('load', resolve, false);
@@ -31,11 +34,11 @@
 
           bufA = gl.createBuffer();
           gl.bindBuffer(gl.ARRAY_BUFFER, bufA);
-          gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([.8, 0, 0, 1]), gl.DYNAMIC_COPY);
+          gl.bufferData(gl.ARRAY_BUFFER, initialPosition, gl.DYNAMIC_COPY);
 
           bufB = gl.createBuffer();
           gl.bindBuffer(gl.ARRAY_BUFFER, bufB);
-          gl.bufferData(gl.ARRAY_BUFFER, 4 * 4, gl.DYNAMIC_COPY);
+          gl.bufferData(gl.ARRAY_BUFFER, initialPosition.length * 4, gl.DYNAMIC_COPY);
 
           let transformFeedback = gl.createTransformFeedback();
           gl.bindTransformFeedback(gl.TRANSFORM_FEEDBACK, transformFeedback);
@@ -49,9 +52,14 @@
         gl.vertexAttribPointer(aPosLoc, 4, gl.FLOAT, false, 0, 0);
         gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, bufB);
 
+//        console.log("TRANSFORM_FEEDBACK:", gl.getIndexedParameter(gl.TRANSFORM_FEEDBACK_BUFFER_BINDING, 0) === bufB);
+
         gl.beginTransformFeedback(gl.POINTS);
         gl.drawArrays(gl.POINTS, 0, 1);
         gl.endTransformFeedback();
+
+//        gl.getBufferSubData(gl.TRANSFORM_FEEDBACK_BUFFER, 0, outPosition);
+//        console.log(outPosition);
 
         gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, null);
 

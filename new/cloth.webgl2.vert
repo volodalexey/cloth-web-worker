@@ -6,5 +6,5 @@ out float fInfluenced;
 
 void main(void) {
   fInfluenced = coordinates.z;
-  gl_Position = vec4(coordinates.x, coordinates.y - 0.1, 0.0, 1.0);
+  gl_Position = vec4(coordinates.x, coordinates.y, 0.0, 1.0);
 }

@@ -22,6 +22,10 @@ Promise.all([
       scale: 1, startY: 20
     });
 
+    let stats = new Stats();
+    stats.showPanel( 0 );
+    document.body.appendChild( stats.dom );
+
     let
       /**
        * each point has 2 constraints,
@@ -32,6 +36,7 @@ Promise.all([
       vertexBuffer;
 
     (function update() {
+      stats.begin();
 
       cloth.update({ delta: 0.016, canvas, pointer});
 
@@ -65,6 +70,8 @@ Promise.all([
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.drawArrays(gl.LINES, 0, (iterator + 1) / 3);
+
+      stats.end();
 
       requestAnimationFrame(update)
     })();

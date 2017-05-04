@@ -13,11 +13,18 @@ window.addEventListener('load', () => {
     scale: 1, startY: 20
   });
 
+  let stats = new Stats();
+  stats.showPanel( 0 );
+  document.body.appendChild( stats.dom );
+
   (function update() {
+    stats.begin();
 
     cloth.update({ delta: 0.016, canvas, pointer});
 
     cloth.draw2d({ canvas });
+
+    stats.end();
 
     requestAnimationFrame(update)
   })();

@@ -57,7 +57,7 @@ Promise.all([
 
         sourceVertexBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, sourceVertexBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, springsData, gl.DYNAMIC_COPY);
+        gl.bufferData(gl.ARRAY_BUFFER, springsData, gl.DYNAMIC_DRAW);
 
         coordinatesVertexAttribute = gl.getAttribLocation(shaderProgram, 'coordinates');
         gl.vertexAttribPointer(coordinatesVertexAttribute, 4, gl.FLOAT, false, 0, 0);
@@ -77,7 +77,7 @@ Promise.all([
 
         targetVertexBuffer = gl.createBuffer();
         gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, targetVertexBuffer);
-        gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, springsData.length * 6, gl.DYNAMIC_COPY);
+        gl.bufferData(gl.TRANSFORM_FEEDBACK_BUFFER, springsData.length * 4, gl.DYNAMIC_COPY);
       } else {
         gl.bindBuffer(gl.TRANSFORM_FEEDBACK_BUFFER, targetVertexBuffer);
       }

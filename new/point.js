@@ -75,7 +75,7 @@ class Point {
       return
     }
 
-    this.constraints.forEach((constraint) => constraint.resolve(canvas))
+    this.constraints.forEach((constraint) => constraint.resolveConstraint(canvas))
   }
 
   attach (point, spacing) {

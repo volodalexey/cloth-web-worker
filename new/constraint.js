@@ -5,7 +5,7 @@ class Constraint {
     this.length = spacing;
   }
 
-  resolve ({cloth}) {
+  resolveConstraint({cloth}) {
     let dx = this.p1.x - this.p2.x;
     let dy = this.p1.y - this.p2.y;
     let dist = Math.sqrt(dx * dx + dy * dy);

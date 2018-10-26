@@ -18,7 +18,7 @@ Promise.all([
     WebGL.linkAndUseProgramm(canvas.context, shaderProgram);
     let cloth = new Cloth({
       canvasWidth: canvas.width,
-      clothX: 200, clothY: 200, spacing: 3,
+      clothX: 300, clothY: 200, spacing: 3,
       scale: 1, startY: 20
     });
 
@@ -26,14 +26,18 @@ Promise.all([
     stats.showPanel( 0 );
     document.body.appendChild( stats.dom );
 
+    const totalElements = cloth.points.length * 2 * 2 * 3;
+
     let
       /**
        * each point has 2 constraints,
        * each constraint has 2 points
        * each constraints has 3 coordinates
        */
-      springsData = new Float32Array(cloth.points.length * 2 * 2 * 3),
+      springsData = new Float32Array(totalElements),
       vertexBuffer;
+
+    const elementsPanel = stats.addPanel( new Stats.Panel( '', '#ff8', '#221' ) );
 
     (function update() {
       stats.begin();
@@ -70,6 +74,8 @@ Promise.all([
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.drawArrays(gl.LINES, 0, (iterator + 1) / 3);
+
+      elementsPanel.update(iterator, totalElements);
 
       stats.end();
 

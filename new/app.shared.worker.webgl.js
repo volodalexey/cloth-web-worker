@@ -36,6 +36,7 @@ Promise.all([
     let clothUpdated = false;
     let iterator = 0;
     let clothPointsLength = 0;
+    let totalElements = 0;
 
     worker.onmessage = function({data}) {
       if (Array.isArray(data)) {
@@ -43,9 +44,11 @@ Promise.all([
         switch (type) {
           case 'cloth.points.length':
             [clothPointsLength] = args;
-            sharedBuffer = new SharedArrayBuffer(clothPointsLength * 2 * 2 * 3 * Float32Array.BYTES_PER_ELEMENT);
+            totalElements = clothPointsLength * 2 * 2 * 3;
+            sharedBuffer = new SharedArrayBuffer(totalElements * Float32Array.BYTES_PER_ELEMENT);
             springsFloatData = new Float32Array(sharedBuffer);
             worker.postMessage(['sharedBuffer', sharedBuffer]);
+            worker.postMessage(['Cloth run']);
             break;
           case 'Cloth updated':
             clothUpdated = true;
@@ -58,12 +61,13 @@ Promise.all([
     worker.postMessage(['new Pointer']);
     worker.postMessage(['new Cloth', canvas.width, canvas.height]);
 
+    const elementsPanel = stats.addPanel( new Stats.Panel( '', '#ff8', '#221' ) );
+
     (function update() {
+      stats.begin();
       worker.postMessage(['pointers', ...pointer.pointers]);
-      worker.postMessage(['RAF']);
 
       if (clothUpdated) {
-        stats.begin();
         let gl = canvas.context;
         if (!vertexBuffer) {
           vertexBuffer = gl.createBuffer();
@@ -82,10 +86,12 @@ Promise.all([
         gl.viewport(0, 0, canvas.width, canvas.height);
         gl.drawArrays(gl.LINES, 0, (iterator + 1) / 3);
 
-        clothUpdated = false;
-        stats.end();
+        elementsPanel.update(iterator, totalElements);
+
+        // clothUpdated = false;
       }
 
-      requestAnimationFrame(update)
+      requestAnimationFrame(update);
+      stats.end();
     })();
   });

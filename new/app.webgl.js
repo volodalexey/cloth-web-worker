@@ -18,7 +18,7 @@ Promise.all([
     WebGL.linkAndUseProgramm(canvas.context, shaderProgram);
     let cloth = new Cloth({
       canvasWidth: canvas.width,
-      clothX: 54, clothY: 28, spacing: 8,
+      clothX: 200, clothY: 200, spacing: 3,
       scale: 1, startY: 20
     });
 
